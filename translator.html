@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universal Language Translator</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+}
+.container {
+    max-width: 450px;
+    margin: 40px auto;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+}
+h2 {
+    text-align: center;
+}
+select, textarea, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+}
+.lang-box {
+    display: flex;
+    gap: 10px;
+}
+.lang-box select {
+    width: 50%;
+}
+button {
+    background: #38bdf8;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+}
+.output {
+    margin-top: 15px;
+    background: #020617;
+    padding: 10px;
+    border-radius: 6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🌍 Language Translator</h2>
+
+    <!-- LANGUAGE SELECTION -->
+    <div class="lang-box">
+        <select id="source">
+            <option value="en-US">English</option>
+            <option value="hi-IN">Hindi</option>
+            <option value="mr-IN">Marathi</option>
+            <option value="ur-PK">Urdu</option>
+            <option value="fr-FR">French</option>
+            <option value="es-ES">Spanish</option>
+            <option value="de-DE">German</option>
+            <option value="ar-SA">Arabic</option>
+            <option value="zh-CN">Chinese</option>
+            <option value="ja-JP">Japanese</option>
+            <option value="ta-IN">Tamil</option>
+            <option value="te-IN">Telugu</option>
+            <option value="gu-IN">Gujarati</option>
+            <option value="bn-IN">Bengali</option>
+            <option value="ko-KR">Korean</option>
+        </select>
+
+        <select id="target">
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="mr">Marathi</option>
+            <option value="ur">Urdu</option>
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+            <option value="de">German</option>
+            <option value="ar">Arabic</option>
+            <option value="zh">Chinese</option>
+            <option value="ja">Japanese</option>
+            <option value="ta">Tamil</option>
+            <option value="te">Telugu</option>
+            <option value="gu">Gujarati</option>
+            <option value="bn">Bengali</option>
+            <option value="ko">Korean</option>
+        </select>
+    </div>
+
+    <!-- INPUT -->
+    <textarea id="text" placeholder="Type or speak your sentence here..."></textarea>
+
+    <!-- ACTION BUTTONS -->
+    <button onclick="startVoice()">🎤 Voice Input</button>
+    <button onclick="translateText()">🔁 Translate</button>
+    <button onclick="speakTranslated()">🔊 Speak Translation</button>
+
+    <!-- OUTPUT -->
+    <div class="output">
+        <p><b>Original:</b></p>
+        <p id="original"></p>
+
+        <p><b>Translated:</b></p>
+        <p id="translated"></p>
+    </div>
+</div>
+
+<script>
+// MAP SPEECH LANG → TRANSLATION LANG
+const langMap = {
+    "en-US": "en",
+    "hi-IN": "hi",
+    "mr-IN": "mr",
+    "ur-PK": "ur",
+    "fr-FR": "fr",
+    "es-ES": "es",
+    "de-DE": "de",
+    "ar-SA": "ar",
+    "zh-CN": "zh",
+    "ja-JP": "ja",
+    "ta-IN": "ta",
+    "te-IN": "te",
+    "gu-IN": "gu",
+    "bn-IN": "bn",
+    "ko-KR": "ko"
+};
+
+// 🎤 VOICE INPUT
+function startVoice() {
+    let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        alert("Voice input not supported in this browser");
+        return;
+    }
+
+    let recognition = new SpeechRecognition();
+    recognition.lang = document.getElementById("source").value;
+    recognition.start();
+
+    recognition.onresult = function(event) {
+        document.getElementById("text").value =
+            event.results[0][0].transcript;
+    };
+}
+
+// 🔁 TRANSLATE TEXT (FIXED)
+async function translateText() {
+    let text = document.getElementById("text").value;
+    let sourceFull = document.getElementById("source").value;
+    let target = document.getElementById("target").value;
+
+    let source = langMap[sourceFull];
+
+    document.getElementById("original").innerText = text;
+
+    let response = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${source}|${target}`
+    );
+    let data = await response.json();
+
+    document.getElementById("translated").innerText =
+        data.responseData.translatedText;
+}
+
+// 🔊 VOICE OUTPUT
+function speakTranslated() {
+    let text = document.getElementById("translated").innerText;
+    let lang = document.getElementById("target").value;
+
+    if (!text) {
+        alert("No translated text to speak");
+        return;
+    }
+
+    let utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    speechSynthesis.speak(utterance);
+}
+</script>
+
+</body>
+</html>
