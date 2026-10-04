@@ -31,7 +31,19 @@ A web-based Language Translator that supports translation between 15 languages. 
 5. Enter text or use voice input.
 6. Get the translated text and voice output.
 
-## 📸 Screenshot
+## 📸 Screenshots
+
+### 1. Language Translator
+![Translator Screenshot 1](translator%201.png)
+
+### 2. Text Translation
+![Translator Screenshot 2](translator%202.png)
+
+### 3. Text Translation
+![Translator Screenshot 3](translator%203.png)
+
+### 4. Translation Output
+![Translator Screenshot 4](translator%204.png)
 
 ## 🎯 Project Objective
 
