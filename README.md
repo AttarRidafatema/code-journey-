@@ -1,7 +1,3 @@
-# code-journey-
-A collection of projects, experiments, and learning milestones from my journey through Computer Science and development.
-
-
 # 🌐 Language Translator 🎙️
 
 A web-based Language Translator that supports translation between 15 languages. It accepts both text and voice input and provides text and voice output, making communication easier.
